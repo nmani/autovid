@@ -58,6 +58,9 @@ class AutoVid(VERINT):
             status_label.set(msg)
 
         try:
+            update_status("Querying Database To Convert ATM ID to SITE Name")
+            site_id = term2site(self.term_id)
+
             update_status("Starting VERINT. Please wait...")
             self.init_app()
 
@@ -66,9 +69,6 @@ class AutoVid(VERINT):
 
             update_status("Resetting the State")
             self.reset_state()
-
-            update_status("Querying Database To Convert ATM ID to SITE Name")
-            site_id = term2site(self.term_id)
 
             update_status("Found Site: {site_id}")
             self.select_site(site_id)

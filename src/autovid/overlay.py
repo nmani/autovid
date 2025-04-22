@@ -65,8 +65,7 @@ class Overlay(tk.Tk):
         )
         warn.pack(fill="x", expand=True, side="bottom")
 
-    # def _calc_screen_sizes() -> tuple[int, int]:
-    #   ...
-
     def kill_on_hover(self, event: Any):
         self.destroy
+
+    # def _calc_screen_sizes() -> tuple[int, int]: ...

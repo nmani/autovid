@@ -13,7 +13,7 @@ class LocalConfig:
     def __init__(self) -> None:
         min_env = ["AUTOVID_DB_CONN_STRING"]
 
-        if min_env not in os.environ:
+        if not all([x in os.environ for x in min_env]):
             raise ValueError(
                 f"Requires these minimum environmental variables to be set: {min_env}"
             )
@@ -40,7 +40,7 @@ def term2site(term_str: str | list[str] | set[str]) -> str | None:
     """.format(term_str)
 
     try:
-        output: pd.DataFrame = pd.read_sql(sql, conn=conn_string)
+        output: pd.DataFrame = pd.read_sql(sql, con=conn_string)
     except Exception as err:
         raise err
 

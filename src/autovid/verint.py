@@ -325,7 +325,7 @@ class VERINT:
 
         video_tabcontainer = (
             (self._ret_video_tab())
-            .children(class_name="VideoTabControl"[0])
+            .children(class_name="VideoTabControl")[0]
             .children()[1]
             .children(class_name="VideoRequest")[0]
         )
