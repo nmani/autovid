@@ -8,7 +8,7 @@ from autovid.common import retry
 
 sys.coinit_flags = 2  # Single-threaded COM helps with stability
 
-from pywinauto import Application, WindowSpecification, findwindows
+from pywinauto import Application, Desktop, WindowSpecification, findwindows
 
 lg = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ class VERINT:
                 f"Unable to find VERINT executable at: {self.verint_full_path}"
             )
 
-            self._chk_multi_instances()
+        self._chk_multi_instances()
 
     def init_app(self, wm: tuple[int, int, int, int] | None = None) -> None:
         app = Application(backend="uia").start(
@@ -123,7 +123,7 @@ class VERINT:
 
     def _chk_multi_instances(self, clear: bool = True) -> None:
         lg.info("Checking for multiple instances of VERINT..")
-        instances = Desktop(backend="uia").window(title=self.verint_title)
+        instances = Desktop(backend="uia").windows(title=self.verint_title)
 
         if len(instances) > 0:
             if not clear:
@@ -134,7 +134,7 @@ class VERINT:
         lg.info(f"Found {len(instances)} instances of VERINT. Killing them all...")
         for instance in instances:
             pid = instance.process_id()
-            inst_process = Application(backend="uia").connect(process_id=pid)
+            inst_process = Application(backend="uia").connect(process=pid)
             inst_process.kill()
 
     @retry(max_retries=10, wait_time=1)

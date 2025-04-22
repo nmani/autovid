@@ -26,7 +26,7 @@ class Overlay(tk.Tk):
         if w_percent and (10 <= w_percent <= 33):
             window_width = math.floor(self.screen_width * (w_percent / 100))
 
-        self.status_label = tk.StringVar(value="Status Messages Will Apear Here")
+        self.status_label = tk.StringVar(value="Status Messages Will Appear Here")
         self.geometry(f"{window_width}x{w_size[1]}+0+0")
 
         container = tk.Frame(self)

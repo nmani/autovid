@@ -41,7 +41,7 @@ example = AutoVid(
 
 This will query multiple cameras based ona regex within a singel site based on a specific time or time range.
 
-## Face Extraction (TDB) - Experimental
+### Face Extraction (TDB) - Experimental
 
 Will extract faces and save them into a database
 
