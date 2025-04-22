@@ -19,7 +19,7 @@ class VERINT:
 
     Methods
     -------
-    logins()
+    login()
         Clicks the login button at the initial VERINT application launch. Assumes prefilled + AD login
     reset_state()
         Culls all Dashboard and Video UI elements to reduce memory usage, speed execution, and provide consistent state for automation
@@ -31,19 +31,35 @@ class VERINT:
         Saved an copy of the image
     """
 
-    def __init__(self, outdir: Path | str | None = None) -> None:
+    def __init__(
+        self,
+        outdir: Path | str,
+        verint_path: Path | str = Path(
+            r"C:\Program Files (x86)\Verint\Video Investigator"
+        ),
+        verint_exe: str = "Verint.VideoInvestigator.exe",
+        verint_title: str = "Video Inspector",
+    ) -> None:
         """
         Parameters
         ----------
 
-        outdir: Path | str, optional
+        outdir: Path | str
             Output directory of images / videos
+        verint_path: Path | str, optional
+            Location in Windows of the VERINT application directory
+        verint_exec: str, optional
+            Name of VERINT application executable located in application directory
+        verint_title:  str, optionai
+            Application title. Used to find multiple instances of VERINT.
         """
 
-        self.verint_path: Path = Path(r"C:\\Program Files")
+        if isinstance(verint_path, str):
+            verint_path = Path(verint_path)
 
-        self.verint_title: str = "Video Inspector"
-        self.verint_exe: str = "Verint.VideoInvestigator.exe"
+        self.verint_path: Path = verint_path
+        self.verint_exe: str = verint_exe
+        self.verint_title: str = verint_title
         self.verint_full_path: Path = self.verint_path / self.verint_exe
 
         self.outdir: Path | str | None = outdir
@@ -107,7 +123,7 @@ class VERINT:
 
     def _chk_multi_instances(self, clear: bool = True) -> None:
         lg.info("Checking for multiple instances of VERINT..")
-        instances = Desktop(backend="uia").window(title="Video Inspector")
+        instances = Desktop(backend="uia").window(title=self.verint_title)
 
         if len(instances) > 0:
             if not clear:

@@ -11,8 +11,8 @@ dependencies = [
     "pydantic>=2.11.3",
     "pyodbc>=5.2.0",
     "sqlalchemy>=2.0.40",
-    # "pywin32>308",
-    # "pywinauto>0.6.9",
+    "pywin32>=310",
+    "pywinauto>=0.6.9",
 
 ]
 
@@ -21,6 +21,4 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [dependency-groups]
-dev = [
-    "pytest>=8.3.5"
-]
+dev = ["pytest>=8.3.5"]

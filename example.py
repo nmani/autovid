@@ -8,7 +8,7 @@ lg.basicConfig(level=lg.DEBUG)
 
 # Single Camera Query
 example = AutoVid(
-    terminal_id="adfasdf", tran_dt=datetime.now(), outdir=Path().cwd() / "output"
+    term_id="terminal-id", tran_dt=datetime.now(), outdir=Path().cwd() / "output"
 )
 
 example.start_overlay()
