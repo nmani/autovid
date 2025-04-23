@@ -167,7 +167,7 @@ class VERINT:
     @retry(max_retries=10, wait_time=1)
     def _ret_video_tabcontainer(self) -> WindowSpecification:
         out_val = (
-            (self._ret_verint_tab())
+            (self._ret_video_tab())
             .children(class_name="VideoTabControl")[0]
             .children()[1]
             .children(class_name="VideoRequest")[0]
@@ -338,7 +338,7 @@ class VERINT:
         )
 
         self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
-        camera_button = camera_pane.children(class_name="ListBox"[0]).children(
+        camera_button = camera_pane.children(class_name="ListBox")[0].children(
             class_name="ListBoxItem"
         )[0]
 
@@ -347,14 +347,15 @@ class VERINT:
 
     def click_recorded_button(self) -> None:
         self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        time.sleep(2)
         recorded_button = (
             (self._ret_video_tabcontainer())
-            .children(class_name="Expander", title="Recorded View")[0]
+            .children(class_name="Expander", title="Recorded Video")[0]
             .children(class_name="Button")[1]
         )
 
         recorded_button.set_focus()
-        recorded_button.click()
+        recorded_button.input_click()
 
     @retry(max_retries=3, wait_time=15)
     def videoview(self) -> None:

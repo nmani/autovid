@@ -73,7 +73,7 @@ class AutoVid(VERINT):
             update_status("Found Site: {site_id}")
             self.select_site(site_id)
 
-            update_status("Finding DVR Camera: {self.term_id}")
+            update_status(f"Finding DVR Camera: {self.term_id}")
             self.select_camera(camera_name=self.term_id)
 
             update_status("Input Datetime Range")
