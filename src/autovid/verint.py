@@ -131,11 +131,11 @@ class VERINT:
                     f"Found {len(instances)} VERINT instances but expected none. Close all VERINT instances and try again..."
                 )
 
-        lg.info(f"Found {len(instances)} instances of VERINT. Killing them all...")
-        for instance in instances:
-            pid = instance.process_id()
-            inst_process = Application(backend="uia").connect(process=pid)
-            inst_process.kill()
+            lg.info(f"Killing {len(instances)} instances of VERINT.")
+            for instance in instances:
+                pid = instance.process_id()
+                inst_process = Application(backend="uia").connect(process=pid)
+                inst_process.kill()
 
     @retry(max_retries=10, wait_time=1)
     def _ret_login_button(self) -> WindowSpecification:
