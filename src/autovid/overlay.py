@@ -53,7 +53,7 @@ class Overlay(tk.Tk):
             foreground="red",
             font=("Arial", 14),
         )
-        abort.pack()
+        abort.pack(fill="both", expand=True)
 
         warn = ttk.Label(
             container,

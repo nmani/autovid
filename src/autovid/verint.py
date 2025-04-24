@@ -35,10 +35,10 @@ class VERINT:
         self,
         outdir: Path | str,
         verint_path: Path | str = Path(
-            r"C:\Program Files (x86)\Verint\Video Investigator"
+            r"C:\\Program Files (x86)\\Verint\\Video Investigator"
         ),
-        verint_exe: str = "Verint.VideoInvestigator.exe",
-        verint_title: str = "Video Inspector",
+        verint_exe: str = r"Verint.VideoInvestigator.exe",
+        verint_title: str = r"Video Inspector",
     ) -> None:
         """
         Parameters
@@ -257,7 +257,7 @@ class VERINT:
             workspace_tab.children(class_name="ScrollViewer")[0]
             .children(class_name="TreeView")[0]
             .children(
-                class_name="TrueViewItem",
+                class_name="TreeViewItem",
                 title="Verint.Database.WrapperClasses.DvrNode",
             )
         )
@@ -265,7 +265,7 @@ class VERINT:
         for open_workspace in open_workspaces:
             open_workspace.children(class_name="Menu")[0].click_input()
             open_workspace.set_focus()
-            open_workspaces.type_keys(r"{DOWN}{DOWN}{DOWN}{DOWN}{ENTER}")
+            open_workspace.type_keys(r"{DOWN}{DOWN}{DOWN}{DOWN}{ENTER}")
             time.sleep(1)
 
     @retry(max_retries=2, wait_time=2)
@@ -390,7 +390,7 @@ class VERINT:
         self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
 
         img_hwnd = self.verint.children(class_name="Window", title="Save Image")[0]
-        flname_textbox = img_hwnd.children(class_name="ExportFromDialog")[0].children(
+        flname_textbox = img_hwnd.children(class_name="ExportFrameDialog")[0].children(
             class_name="TextBox"
         )[0]
 
@@ -452,7 +452,7 @@ class VERINT:
         )
 
         vid_menu = (
-            dvr_player.children(class_anme="VideoContainer")[0]
+            dvr_player.children(class_name="VideoContainer")[0]
             .children(class_name="Menu")[0]
             .children()[0]
         )
