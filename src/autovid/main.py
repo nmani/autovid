@@ -49,13 +49,16 @@ class AutoVid(VERINT):
         self.thread = Thread(target=self.pull_image, args=(overlay_obj,), daemon=True)
         self.thread.start()
 
-    def pull_image(self, overlay_obj: Overlay) -> None:
+    def pull_image(self, overlay_obj: Overlay | None = None) -> None:
         def update_status(msg: str):
-            if kill_thread.is_set():
-                raise ConnectionAbortedError("Command to Kill Thread Received")
+            if overlay_obj:
+                if kill_thread.is_set():
+                    raise ConnectionAbortedError("Command to Kill Thread Received")
 
-            status_label: tk.StringVar = overlay_obj.status_label
-            status_label.set(msg)
+                status_label: tk.StringVar = overlay_obj.status_label
+                status_label.set(msg)
+
+            lg.info(msg)
 
         try:
             update_status("Querying Database To Convert ATM ID to SITE Name")
@@ -70,7 +73,7 @@ class AutoVid(VERINT):
             update_status("Resetting the State")
             self.reset_state()
 
-            update_status("Found Site: {site_id}")
+            update_status(f"Found Site: {site_id}")
             self.select_site(site_id)
 
             update_status(f"Finding DVR Camera: {self.term_id}")
@@ -105,5 +108,6 @@ class AutoVid(VERINT):
             lg.info("Finish pulling the image...")
 
         finally:
-            self.overlay.destroy()
-            lg.info("Successfully destroyed thread")
+            if overlay_obj:
+                self.overlay.destroy()
+                lg.info("Successfully destroyed thread")

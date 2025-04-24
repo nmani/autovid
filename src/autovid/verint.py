@@ -79,11 +79,12 @@ class VERINT:
         self._chk_multi_instances()
 
     def init_app(self, wm: tuple[int, int, int, int] | None = None) -> None:
+        lg.info("Initializing and launching VERINT...")
         app = Application(backend="uia").start(
             cmd_line=str(self.verint_full_path), work_dir=str(self.verint_path)
         )
 
-        app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         verint: WindowSpecification = app.VideoInspect
 
         if wm:
@@ -100,7 +101,7 @@ class VERINT:
     @retry(max_retries=5, wait_time=5)
     def login(self) -> None:
         self.verint.set_focus()
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         login_button = self._ret_login_button()
 
         if login_button.is_visible():
@@ -183,23 +184,23 @@ class VERINT:
 
     @retry(max_retries=3, wait_time=5)
     def reset_state(self) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
 
         verint_tab = self._ret_verint_tab()
         video_tab = self._ret_video_tab()
 
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         self.verint.set_focus()
         video_tab.click_input()
         self._clear_tabs()
 
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         self.verint.set_focus()
         verint_tab.click_input()
         self._clear_dashboard()
 
     def _clear_dashboard(self) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
 
         self.verint.set_focus()
         (self._ret_verint_tab()).click_input()
@@ -222,10 +223,10 @@ class VERINT:
             cards_menu.type_keys(r"{DOWN}{DOWN}{ENTER}")
 
     def _clear_tabs(self) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         video_tab = self._ret_video_tab()
 
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         open_tabs = (
             video_tab.parent()
             .children()[1]
@@ -252,7 +253,7 @@ class VERINT:
         )[1]
         workspace_tab.click_input()
 
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         open_workspaces = (
             workspace_tab.children(class_name="ScrollViewer")[0]
             .children(class_name="TreeView")[0]
@@ -270,7 +271,7 @@ class VERINT:
 
     @retry(max_retries=2, wait_time=2)
     def select_site(self, site_id: str) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
 
         (self._ret_searchbox()).type_keys(
             r"^a {BACKSPACE}" + str(site_id) + r"{ENTER}", with_spaces=True
@@ -300,7 +301,7 @@ class VERINT:
         request_video.click_input()
 
     def set_time_range(self, event_dt: datetime, event_td_range: timedelta) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         prompt1_text = f"{(event_dt - event_td_range).strftime('%x %H:%M')} to {(event_dt + event_td_range).strftime('%x %H:%M')}"
 
         video_tabcontainer = self._ret_video_tabcontainer()
@@ -319,9 +320,25 @@ class VERINT:
         datebox.set_focus()
         datebox.type_keys(r"{SPACE}{BACKSPACE}")  # Help prevents edge case
 
+    @retry(max_retries=3, wait_time=5)
+    def hide_vidhistory(self) -> None:
+        # Prevents VERINT from emuerating video history saving CPU time
+        hide_button = (
+            (self._ret_video_tabcontainer)
+            .children(class_name="VideoRequest")[0]
+            .children(class_name="Expander")[0]
+            .children(class_name="ScrollViewer")[0]
+            .children(class_name="DvrVideoDirectoryControl")[0]
+            .children(class_name="Button")[2]
+        )
+
+        hide_button.click_input()
+
     @retry(max_retries=3, wait_time=1)
     def select_camera(self, camera_name: str) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
+
+        self.hide_vidhistory()
 
         video_tabcontainer = (
             (self._ret_video_tab())
@@ -337,7 +354,7 @@ class VERINT:
             r"^a {BACKSPACE}" + str(camera_name) + r"{ENTER}", with_spaces=True
         )
 
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         camera_button = camera_pane.children(class_name="ListBox")[0].children(
             class_name="ListBoxItem"
         )[0]
@@ -346,7 +363,7 @@ class VERINT:
         camera_button.click_input()
 
     def click_recorded_button(self) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         time.sleep(2)
         recorded_button = (
             (self._ret_video_tabcontainer())
@@ -355,12 +372,12 @@ class VERINT:
         )
 
         recorded_button.set_focus()
-        recorded_button.input_click()
+        recorded_button.click_input()
 
     @retry(max_retries=3, wait_time=15)
     def videoview(self) -> None:
         # TODO: Actual error handling...
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
 
         # TODO: Below does full search and take too long.. Need to rewrite...
         video_notfound = self.verint.child_window(
@@ -370,7 +387,7 @@ class VERINT:
         if video_notfound.exists():
             raise FileNotFoundError("Video could not be found")
 
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         dvr_player = (
             (self._ret_video_tab())
             .children()[0]
@@ -387,7 +404,7 @@ class VERINT:
 
     @retry(max_retries=3, wait_time=1)
     def save_image(self, fl_name: str | None = None, overwrite: bool = True) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
 
         img_hwnd = self.verint.children(class_name="Window", title="Save Image")[0]
         flname_textbox = img_hwnd.children(class_name="ExportFrameDialog")[0].children(
@@ -442,7 +459,7 @@ class VERINT:
 
     @retry(max_retries=3, wait_time=10)
     def export_image_click(self) -> None:
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
 
         dvr_player = (
             (self._ret_video_tab())
@@ -460,7 +477,7 @@ class VERINT:
         dvr_player.set_focus()
         vid_menu.click_input()
 
-        self.app.wait_cpu_usage_lower(threshold=5, timeout=30)
+        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
         Desktop(backend="uia").window(title="", class_name="Popup").child_window(
             class_name="TextBlock", title="Export Image", depth=5
         ).click_input()
