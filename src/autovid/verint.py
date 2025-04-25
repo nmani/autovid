@@ -62,12 +62,26 @@ class VERINT:
         self.verint_title: str = verint_title
         self.verint_full_path: Path = self.verint_path / self.verint_exe
 
-        self.outdir: Path | str | None = outdir
+        self.outdir: Path | str = outdir
 
         self.app: Application = None
         self.verint: WindowSpecification = None
 
         self._chk_exec()
+        self._chk_outdir()
+
+    def _chk_outdir(self) -> None:
+        if not self.outdir:
+            raise ValueError(
+                "You must provide a value of outdir (image output directory)"
+            )
+        elif isinstance(self.outdir, (Path, str)):
+            self.outdir = Path(self.outdir)
+
+            if not self.outdir.exists():
+                raise FileNotFoundError(
+                    f"Image output directory does not exist: {self.outdir}"
+                )
 
     def _chk_exec(self) -> None:
         lg.info(f"Checking if executable exists at: {self.verint_full_path}")
@@ -325,11 +339,10 @@ class VERINT:
         # Prevents VERINT from emuerating video history saving CPU time
         hide_button = (
             (self._ret_video_tabcontainer)
-            .children(class_name="VideoRequest")[0]
             .children(class_name="Expander")[0]
             .children(class_name="ScrollViewer")[0]
             .children(class_name="DvrVideoDirectoryControl")[0]
-            .children(class_name="Button")[2]
+            .children(class_name="Button")[0]
         )
 
         hide_button.click_input()
@@ -410,11 +423,6 @@ class VERINT:
         flname_textbox = img_hwnd.children(class_name="ExportFrameDialog")[0].children(
             class_name="TextBox"
         )[0]
-
-        if not self.outdir.exists():
-            raise FileNotFoundError(
-                f"Image output directory does not exist: {self.outdir}"
-            )
 
         # Use the auto generated name
         if not fl_name:

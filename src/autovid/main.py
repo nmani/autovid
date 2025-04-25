@@ -63,6 +63,11 @@ class AutoVid(VERINT):
         try:
             update_status("Querying Database To Convert ATM ID to SITE Name")
             site_id = term2site(self.term_id)
+            if not site_id:
+                raise ValueError(
+                    f"Could not return a valid site from: {self.term_id}. Please double check the value"
+                )
+            update_status(f"Linked Terminal: {self.term_id} to {site_id}")
 
             update_status("Starting VERINT. Please wait...")
             self.init_app()
