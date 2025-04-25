@@ -338,7 +338,7 @@ class VERINT:
     def hide_vidhistory(self) -> None:
         # Prevents VERINT from emuerating video history saving CPU time
         hide_button = (
-            (self._ret_video_tabcontainer)
+            (self._ret_video_tabcontainer())
             .children(class_name="Expander")[0]
             .children(class_name="ScrollViewer")[0]
             .children(class_name="DvrVideoDirectoryControl")[0]
@@ -349,7 +349,7 @@ class VERINT:
 
     @retry(max_retries=3, wait_time=1)
     def select_camera(self, camera_name: str) -> None:
-        self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
+        # self.app.wait_cpu_usage_lower(threshold=2.5, timeout=30)
 
         self.hide_vidhistory()
 
