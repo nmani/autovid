@@ -1,0 +1,24 @@
+[project]
+name = "autovid"
+version = "0.1.0"
+description = "Helper module to automate VERINT video searching"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "openpyxl>=3.1.5",
+    "pandas>=2.2.3",
+    "psutil>=7.0.0",
+    "pydantic>=2.11.3",
+    "pyodbc>=5.2.0",
+    "python-dotenv>=1.1.0",
+    "sqlalchemy>=2.0.40",
+    "pywin32>=310 ; sys_platform == 'win32'",
+    "pywinauto>=0.6.9 ; sys_platform == 'win32'",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = ["pytest>=8.3.5"]
