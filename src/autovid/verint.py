@@ -244,7 +244,7 @@ class VERINT:
         open_tabs = (
             video_tab.parent()
             .children()[1]
-            .children()[0]
+            .children()[1]
             .children()[1]
             .children(class_name="VideoTabItem")
         )
